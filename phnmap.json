@@ -1,7 +1,7 @@
 {
     "appid"       : "865eb6fc-2d5f-4717-a967-4cf33b2a3c7c",
     "name"      : "NMAP Scanner",
-    "description" : "NMAP Host and Port Scanner",
+    "description" : "This app integrates with <b>NMAP</b> in order to provide detailed network information.",
     "publisher": "Phantom",
     "package_name": "phantom_nmap",
     "type": "information",
