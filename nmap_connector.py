@@ -1,7 +1,7 @@
 # --
 # File: nmap_connector.py
 #
-# Copyright (c) Phantom Cyber Corporation, 2016-2017
+# Copyright (c) Phantom Cyber Corporation, 2016
 #
 # This unpublished material is proprietary to Phantom Cyber.
 # All rights reserved. The methods and
@@ -56,34 +56,15 @@ class NmapConnector(BaseConnector):
         # configuration (the IP target for the scan) and storing it in the ip variable.
         ip_hostname = param[NMAP_JSON_IP_HOSTNAME]
 
-        # PAPP-1802
-        if (ph_utils.is_url(ip_hostname)):
-            ip_hostname = ph_utils.get_host_from_url(ip_hostname)
-
         is_hostname = False
         if (ph_utils.is_hostname(ip_hostname)):
             is_hostname = True
 
         portlist = param.get(NMAP_JSON_PORTLIST)
-        args = []
+        args = ''
 
         if self._is_valid_ipv6_address(ip_hostname):
-            args.append('-6')
-
-        udp_flag = param.get(NMAP_JSON_UDP, False)
-
-        if udp_flag:
-            # Arguments needed for the workaround.  Since Phantom cannot be elevated to a root user,
-            # (well it can, but it's just not safe), this takes advantage of a linux workaround
-            # For this to work, the bash command in the docs must be run first
-            args.append('--privileged -sU')
-
-        script = param.get(NMAP_JSON_SCRIPT)
-        script_args = param.get(NMAP_JSON_SCRIPT_ARGS)
-        if script:
-            args.append('--script={}'.format(script))
-            if script_args:
-                args.append('--script-args {}'.format(script_args))
+            args = '-6'
 
         # This call sends a progress message to the Phantom platform where it is saved in
         # persistent storage
@@ -101,7 +82,7 @@ class NmapConnector(BaseConnector):
         # results in nmap_output
         nmap_output = {}
         try:
-            nmap_output = nm.scan(ip_hostname, portlist, arguments=' '.join(args))
+            nmap_output = nm.scan(ip_hostname, portlist, arguments=args)
         except Exception as e:
             self.add_action_result(action_result)
             return action_result.set_status(phantom.APP_ERROR, 'Scan failed', e)
@@ -144,26 +125,17 @@ class NmapConnector(BaseConnector):
             curr_param = {NMAP_JSON_IP_HOSTNAME: k}
             if (portlist):
                 curr_param.update({NMAP_JSON_PORTLIST: portlist})
-            if (udp_flag):
-                curr_param.update({"udp_scan": udp_flag})
 
             action_result = self.add_action_result(ActionResult(curr_param))
             self._process_scan_result(v)
             add_data = action_result.add_data(v)
-            action_result.set_status(phantom.APP_SUCCESS)
-            if 'udp' in v:
-                length = len(v.get('udp'))
-            elif 'tcp' in v:
-                length = len(v.get('tcp'))
-            else:
-                length = 0
-            scan_type = 'tcp' if len(v.get('tcp', [])) > 0 else 'udp'
-            length_key = 'total_open_{0}_ports'.format(scan_type)
             summary = {
                     'endpoint_state': v.get('status', {}).get('state', 'unknown'),
-                    length_key: length
+                    'total_open_tcp_ports': len(v.get('tcp', []))
                       }
-            action_result.set_summary(summary)
+            action_result.update_summary(summary)
+            action_result.set_status(phantom.APP_SUCCESS)
+
             # modify the ipv4 key from the result if present
             ipv4s = add_data.get('addresses', {}).get('ipv4')
             if (not ipv4s):
@@ -233,15 +205,8 @@ class NmapConnector(BaseConnector):
 
         scan_result['addresses'] = self._normalize_children_into_list(scan_result.get('addresses'))
         self._normalize_into_list(scan_result, 'hostnames')
-        if ('tcp' in scan_result):
-            self._move_port_into_dict(scan_result, 'tcp')
-        elif ('udp' in scan_result):
-            self._move_port_into_dict(scan_result, 'udp')
 
-        if 'hostscript' in scan_result:
-            for i in scan_result['hostscript']:
-                if 'output' in i:
-                    i['output'] = [a.strip() for a in i['output'].split('\n') if a.strip()]
+        self._move_port_into_dict(scan_result, 'tcp')
 
         return phantom.APP_SUCCESS
 
@@ -279,7 +244,6 @@ class NmapConnector(BaseConnector):
             ret_val = self._handle_nmap_scan(param)
 
         return ret_val
-
 
 if __name__ == '__main__':
 

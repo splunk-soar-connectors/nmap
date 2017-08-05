@@ -1,4 +1,3 @@
 nmap_connector.py
 nmap_consts.py
 nmap_view.py
-.git*
