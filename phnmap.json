@@ -7,7 +7,7 @@
     "type": "information",
     "license": "Copyright (c) Phantom Cyber Corporation 2016",
     "main_module" : "nmap_connector.pyc",
-    "app_version": "1.0.10",
+    "app_version": "1.0.23",
     "utctime_updated": "2016-10-25T05:50:04.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
