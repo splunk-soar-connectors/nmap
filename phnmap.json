@@ -1,11 +1,11 @@
 {
     "appid"       : "865eb6fc-2d5f-4717-a967-4cf33b2a3c7c",
     "name"      : "NMAP Scanner",
-    "description" : "NMAP Host and Port Scanner",
+    "description" : "This app integrates with <b>NMAP</b> in order to provide detailed network information",
     "publisher": "Phantom",
     "package_name": "phantom_nmap",
     "type": "information",
-    "license": "Copyright (c) Phantom Cyber Corporation 2016",
+    "license": "Copyright (c) Phantom Cyber Corporation 2016-2017",
     "main_module" : "nmap_connector.pyc",
     "app_version": "1.0.23",
     "utctime_updated": "2016-10-25T05:50:04.000000Z",
