@@ -1,14 +1,14 @@
 {
     "appid"       : "865eb6fc-2d5f-4717-a967-4cf33b2a3c7c",
     "name"      : "NMAP Scanner",
-    "description" : "This app integrates with <b>NMAP</b> in order to provide detailed network information.",
+    "description" : "This app integrates with <b>NMAP</b> in order to provide detailed network information",
     "publisher": "Phantom",
     "package_name": "phantom_nmap",
     "type": "information",
     "license": "Copyright (c) Phantom Cyber Corporation 2016-2017",
     "main_module" : "nmap_connector.pyc",
     "app_version": "1.0.23",
-    "utctime_updated": "2017-08-05T22:53:51.000000Z",
+    "utctime_updated": "2016-10-25T05:50:04.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
     "product_version_regex": ".*",
@@ -20,8 +20,8 @@
     "actions": [
       {
         "action": "scan network",
-        "description": "Execute NMAP scan against a host or subnet",
-        "verbose": "<p>If <b>udp_scan</b> is false (it is by default), this action will use the following NMAP command line options: nmap -oX - -sV IP_ADDRESS.</p><p>If <b>udp_scan</b> is true, this action will use the following NMAP command line options: nmap -oX - -sU --privileged IP_ADDRESS.</p><p>Performing a UDP scan requires elevated permissions.  Privileged permissions can be used, if and only if the user first runs this command as root on Phantom:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip /usr/bin/nmap</code></p><p><b>Warning:</b> UDP function is limited to root for very good reason.  This is dangerous. The NMAP Scripting Engine (NSE) allows scripts to sniff the network, change firewall rules and interface configuration, or exploit vulnerabilities including on localhost. It's possible, especially with elevated capabilities, for a clever person to use NMAP and NSE to escalate to full root privileges. If you do not understand these risks, do not do this.</p><p>To undo the setcap command from before, just run:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service-eip /usr/bin/nmap</code><br><p>action_result.data.*.udp.* data paths will only be present if <b>udp_scan</b> is true.  They replace action_result.data.*.tcp.* data paths.</p>",
+        "description": "Execute NMAP scan against an IP or subnet",
+        "verbose": "This action will use the following nmap command line options: nmap -oX - -sV xxxx  . <br>  The NMAP Scanner app will also only support a TCP scan today.  UDP scanning and OS fingerprinting require elevated privileges.",
         "type": "investigate",
         "identifier": "nmap_scan",
         "read_only": true,
@@ -29,7 +29,7 @@
           "ip_hostname": {
             "description": "IP address/hostname (CIDR notation supported)",
             "data_type": "string",
-            "contains": ["ip", "host name", "url"],
+            "contains": ["ip", "host name"],
             "primary": true,
             "required": true,
             "order": 0
@@ -40,27 +40,6 @@
             "primary": false,
             "required": false,
             "order": 1
-          },
-          "udp_scan": {
-            "description": "UDP Scan",
-            "data_type": "boolean",
-            "primary": false,
-            "required": false,
-            "order": 2
-          },
-          "script": {
-            "description": "NSE Script",
-            "data_type": "string",
-            "primary": false,
-            "required": false,
-            "order": 3
-          },
-          "script-args": {
-            "description": "Script parameters",
-            "data_type": "string",
-            "primary": false,
-            "required": false,
-            "order": 4
           }
         },
         "render": {
@@ -72,43 +51,6 @@
          },
          "output": [
           {
-            "data_path": "action_result.data.*.udp.*.cpe",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.conf",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.name",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.port",
-            "data_type": "string",
-            "contains": ["port"]
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.state",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.reason",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.product",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.udp.*.version",
-            "data_type": "string"
-          },
-	  {
-	    "data_path": "action_result.data.*.udp.*.extrainfo",
-	    "data_type": "string" 
-	  },
-	  {
             "data_path": "action_result.data.*.tcp.*.cpe",
             "data_type": "string"
           },
@@ -146,14 +88,6 @@
             "data_type": "string"
           },
           {
-            "data_path": "action_result.data.*.hostscript.*.id",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.data.*.hostscript.*.output.*",
-            "data_type": "string"
-          },
-          {
             "data_path": "action_result.data.*.status.state",
             "data_type": "string"
           },
@@ -161,7 +95,7 @@
             "data_path": "action_result.data.*.status.reason",
             "data_type": "string"
           },
-          {
+          { 
             "data_path": "action_result.data.*.hostnames.*.type",
             "data_type": "string"
           },
@@ -196,29 +130,13 @@
             "data_type": "numeric"
           },
           {
-            "data_path": "action_result.summary.total_open_udp_ports",
-            "data_type": "numeric"
-          },
-          {
             "data_path": "action_result.parameter.portlist",
             "data_type": "string"
           },
           {
             "data_path": "action_result.parameter.ip_hostname",
             "data_type": "string",
-            "contains": ["ip", "host name", "url"]
-          },
-          {
-            "data_path": "action_result.parameter.udp_scan",
-            "data_type": "boolean"
-          },
-          {
-            "data_path": "action_result.parameter.script",
-            "data_type": "string"
-          },
-          {
-            "data_path": "action_result.parameter.script-args",
-            "data_type": "string"
+            "contains": ["ip", "host name"]
           },
           {
             "data_path": "summary.total_objects",
