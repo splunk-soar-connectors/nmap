@@ -157,10 +157,21 @@ of Phantom Cyber.
 </table>
 {% endif %}
 
+{% if result.data.hostscript %}
+<h3 class="nm-h3-style">Scripts</h3>
+{% for script in result.data.hostscript %}
+    <h4 class="nm-h4-style">{{ script.id }}</h4>
+    <p>
+    {% for line in script.output %}
+       {{ line }}<br/>
+    {% endfor %}
+    </p>
+{% endfor %}
+{% endif %}
+
 <h3 class="nm-h3-style">Ports</h3>
-
+{% if result.data.tcp %}
 <h2 class="nm-h3-style">TCP</h2>
-
 <table class="nm-table-horizontal">
   <tr><th>Port</th><th>Name</th><th>Product</th><th>Version</th><th>Reason</th><th>State</th><th>Extra Info</th><th>CPE</th></tr>
   {% for curr_port in result.data.tcp %}
@@ -179,7 +190,30 @@ of Phantom Cyber.
   </tr>
   {% endfor %}
 </table>
-{% endif %} 
+{% endif %}
+{% if result.data.udp %}
+<h2 class="nm-h3-style">UDP</h2>
+<table class="nm-table-horizontal">
+  <tr><th>Port</th><th>Name</th><th>Product</th><th>Version</th><th>Reason</th><th>State</th><th>Extra Info</th><th>CPE</th><th>Conf</th></tr>
+  {% for curr_port in result.data.udp %}
+  <tr>
+    <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port }}' }], 0, {{ container.id }}, null, false);">
+        {{ curr_port.port }}
+        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+    </a></td>
+    <td>{{ curr_port.name }}</td>
+    <td>{{ curr_port.product }}</td>
+    <td>{{ curr_port.version }}</td>
+    <td>{{ curr_port.reason }}</td>
+    <td>{{ curr_port.state }}</td>
+    <td>{{ curr_port.extrainfo }}</td>
+    <td>{{ curr_port.cpe }}</td>
+    <td>{{ curr_port.conf }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+{% endif %}
 <!------------------- if status is True ---------------------->
 
 <!------------------- For each Result END ---------------------->
