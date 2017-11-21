@@ -15,6 +15,7 @@
     "min_phantom_version": "1.0.240",
     "logo": "nmap.png",
     "rpm_dependencies": "nmap",
+    "deb_dependencies": "nmap",
     "configuration": {
     },
     "actions": [
