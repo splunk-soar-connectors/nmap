@@ -7,7 +7,7 @@
     "type": "information",
     "license": "Copyright (c) Phantom Cyber Corporation 2016-2017",
     "main_module" : "nmap_connector.pyc",
-    "app_version": "1.0.23",
+    "app_version": "1.0.24",
     "utctime_updated": "2017-08-05T22:53:51.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
@@ -15,6 +15,7 @@
     "min_phantom_version": "1.0.240",
     "logo": "nmap.png",
     "rpm_dependencies": "nmap",
+    "deb_dependencies": "nmap",
     "configuration": {
     },
     "actions": [
