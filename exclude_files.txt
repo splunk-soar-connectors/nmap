@@ -1,4 +1,7 @@
-nmap_connector.py
+docker-compose.yml
 nmap_consts.py
-nmap_view.py
+Makefile
+nmap_connector.py
 .git*
+nmap_view.py
+.gitlab-ci.yml
