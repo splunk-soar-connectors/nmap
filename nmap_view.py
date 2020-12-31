@@ -47,5 +47,4 @@ def display_scannetwork(provides, all_app_runs, context):
             if (not ctx_result):
                 continue
             results.append(ctx_result)
-    print context
     return 'display_scannetwork.html'

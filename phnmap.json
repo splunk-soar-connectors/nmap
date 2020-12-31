@@ -6,16 +6,17 @@
     "package_name": "phantom_nmap",
     "type": "information",
     "license": "Copyright (c) Phantom Cyber Corporation, 2016-2018",
-    "main_module": "nmap_connector.pyc",
-    "app_version": "1.0.26",
+    "main_module": "nmap_connector.py",
+    "app_version": "2.0.0",
     "utctime_updated": "2018-01-26T00:49:50.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
     "product_version_regex": ".*",
-    "min_phantom_version": "1.0.240",
+    "min_phantom_version": "4.9.39220",
     "logo": "logo_nmap.svg",
     "logo_dark": "logo_nmap_dark.svg",
     "rpm_dependencies": "nmap",
+    "python_version": "3",
     "configuration": {},
     "actions": [
         {
@@ -59,7 +60,7 @@
                     "required": false,
                     "order": 3
                 },
-                "script-args": {
+                "script_args": {
                     "description": "Script parameters",
                     "data_type": "string",
                     "primary": false,
@@ -233,7 +234,7 @@
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.parameter.script-args",
+                    "data_path": "action_result.parameter.script_args",
                     "data_type": "string"
                 },
                 {
