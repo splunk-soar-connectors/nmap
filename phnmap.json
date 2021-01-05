@@ -13,6 +13,9 @@
     "product_name": "NMAP",
     "product_version_regex": ".*",
     "min_phantom_version": "4.9.39220",
+    "latest_tested_versions": [
+        "Nmap 6.40"
+    ],
     "logo": "logo_nmap.svg",
     "logo_dark": "logo_nmap_dark.svg",
     "rpm_dependencies": "nmap",
