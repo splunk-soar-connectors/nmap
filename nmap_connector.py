@@ -9,21 +9,53 @@ import phantom.app as phantom
 
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
-from nmap_consts import *
+try:
+    from nmap_consts import *
+except:
+    from .nmap_consts import *
 import phantom.utils as ph_utils
 
 # Imports local to this App
 
 # import simplejson as json
 import simplejson as json
-import nmap
+try:
+    import nmap
+except:
+    from . import nmap
 import socket
+import ipaddress
 
 
 # Define the App Class
 class NmapConnector(BaseConnector):
 
     ACTION_ID_SCAN = "nmap_scan"
+    ACTION_ID_TEST_ASSET_CONNECTIVITY = "test_asset_connectivity"
+
+    def _handle_test_connectivity(self, param):
+        self.save_progress('In action handler for: {0}'.format(self.get_action_identifier()))
+        try:
+            # This call is specific to the nmap python module.  It is instantiating the scanner.
+            nm = nmap.PortScanner()
+        except Exception as e:
+            self.save_progress('Unable to instantiate PortScanner object. You might need to yum install nmap. Error: {}'.format(e))
+            self.save_progress("Test Connectivity Failed")
+            return self.set_status(phantom.APP_ERROR)
+
+        try:
+            self.save_progress("Scanning IP: {}, Ports: {}".format(self._ip_address, self._portlist))
+            _ = nm.scan(self._ip_address, self._portlist)
+            self.save_progress("Test Connectivity Passed")
+        except Exception as e:
+            try:
+                self.save_progress("Scan Failed for the given configuration parameters. Error: {}".format(e))
+            except:
+                self.save_progress("Scan Failed for the given configuration parameters. Error: Unable to get the error message.")
+            self.save_progress("Test Connectivity Failed")
+            return self.set_status(phantom.APP_ERROR)
+
+        return self.set_status(phantom.APP_SUCCESS)
 
     def _handle_nmap_scan(self, param):
 
@@ -132,7 +164,7 @@ class NmapConnector(BaseConnector):
                     'Nmap command failed, ERROR: {0}'.format(error))
 
         # now parse through the scan results and create/add action results
-        for k, v in nmap_scan.items():
+        for k, v in list(nmap_scan.items()):
             curr_param = {NMAP_JSON_IP_HOSTNAME: k}
             if (portlist):
                 curr_param.update({NMAP_JSON_PORTLIST: portlist})
@@ -213,7 +245,7 @@ class NmapConnector(BaseConnector):
             return
 
         mod_list = []
-        for k, v in value_dict.items():
+        for k, v in list(value_dict.items()):
             v['port'] = k
             mod_list.append(v)
         input_dict[key] = mod_list
@@ -255,6 +287,16 @@ class NmapConnector(BaseConnector):
         """Don't use BaseConnector's validations, for ip use our own
         """
         self.set_validator("ip", self.validate_ip)
+
+        config = self.get_config()
+        self._ip_address = config.get("ip_address", NMAP_DEFAULT_IP_CONNECTIVITY)
+        self._portlist = config.get("ports", NMAP_DEFAULT_PORTLIST_CONNECTIVITY)
+
+        try:
+            ipaddress.ip_address(self._ip_address)
+        except:
+            return self.set_status(phantom.APP_ERROR, "Please provide a valid IP Address in the configuration parameters")
+
         return phantom.APP_SUCCESS
 
     def handle_action(self, param):
@@ -269,6 +311,8 @@ class NmapConnector(BaseConnector):
         # Check the action_id and align it with the correct function.
         if (action_id == self.ACTION_ID_SCAN):
             ret_val = self._handle_nmap_scan(param)
+        elif (action_id == self.ACTION_ID_TEST_ASSET_CONNECTIVITY):
+            ret_val = self._handle_test_connectivity(param)
 
         return ret_val
 

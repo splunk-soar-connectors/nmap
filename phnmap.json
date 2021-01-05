@@ -17,8 +17,29 @@
     "logo_dark": "logo_nmap_dark.svg",
     "rpm_dependencies": "nmap",
     "python_version": "3",
-    "configuration": {},
+    "configuration": {
+        "ip_address": {
+            "data_type": "string",
+            "order": 0,
+            "description": "IP Address for testing connectivity (default: 8.8.8.8)"
+        },
+        "ports": {
+            "data_type": "string",
+            "order": 1,
+            "description": "Ports e.g. 22,80,443,1000-1024 (default: 80,443)"
+        }
+    },
     "actions": [
+        {
+            "action": "test connectivity",
+            "description": "Validate the asset configuration for connectivity. This action queries the MaxMind DB for the IP mentioned in the configuration parameters",
+            "type": "test",
+            "identifier": "test_asset_connectivity",
+            "read_only": true,
+            "parameters": {},
+            "output": [],
+            "versions": "EQ(*)"
+        },
         {
             "action": "scan network",
             "description": "Execute NMAP scan against a host or subnet",
@@ -42,38 +63,23 @@
                 "portlist": {
                     "description": "Portlist e.g. 22,80,443,1000-1024",
                     "data_type": "string",
-                    "primary": false,
-                    "required": false,
                     "order": 1
                 },
                 "udp_scan": {
                     "description": "UDP Scan",
                     "data_type": "boolean",
-                    "primary": false,
-                    "required": false,
                     "order": 2
                 },
                 "script": {
                     "description": "NSE Script",
                     "data_type": "string",
-                    "primary": false,
-                    "required": false,
                     "order": 3
                 },
                 "script_args": {
                     "description": "Script parameters",
                     "data_type": "string",
-                    "primary": false,
-                    "required": false,
                     "order": 4
                 }
-            },
-            "render": {
-                "type": "custom",
-                "width": 10,
-                "height": 5,
-                "view": "nmap_view.display_scannetwork",
-                "title": "Scan Network"
             },
             "output": [
                 {
@@ -194,7 +200,11 @@
                 },
                 {
                     "data_path": "action_result.status",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
                 },
                 {
                     "data_path": "action_result.message",
@@ -246,6 +256,13 @@
                     "data_type": "numeric"
                 }
             ],
+            "render": {
+                "type": "custom",
+                "width": 10,
+                "height": 5,
+                "view": "nmap_view.display_scannetwork",
+                "title": "Scan Network"
+            },
             "versions": "EQ(*)"
         }
     ]
