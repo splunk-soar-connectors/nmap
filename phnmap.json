@@ -35,7 +35,7 @@
     "actions": [
         {
             "action": "test connectivity",
-            "description": "Validate the asset configuration for connectivity. This action queries the MaxMind DB for the IP mentioned in the configuration parameters",
+            "description": "Validate the asset configuration for connectivity. This action runs nmap on the IP mentioned in the configuration parameters",
             "type": "test",
             "identifier": "test_asset_connectivity",
             "read_only": true,
