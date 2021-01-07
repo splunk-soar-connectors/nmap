@@ -1,6 +1,5 @@
 docker-compose.yml
-nmap_consts.py
 Makefile
-nmap_connector.py
 .git*
-nmap_view.py
+.gitlab-ci.yml
+whitesource-results
