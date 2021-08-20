@@ -1,5 +1,5 @@
 {
-    "appid": "865eb6fc-2d5f-4717-a967-4cf33b2a3c7c",
+    "appid": "1fedc03f-4593-4ad5-81cf-fa7cff652e70",
     "name": "NMAP Scanner",
     "description": "This app integrates with NMAP in order to provide detailed network information",
     "publisher": "Splunk",
@@ -7,7 +7,7 @@
     "type": "information",
     "license": "Copyright (c) 2016-2021 Splunk Inc.",
     "main_module": "nmap_connector.py",
-    "app_version": "2.0.1",
+    "app_version": "1.0.1",
     "utctime_updated": "2021-01-07T11:41:05.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
@@ -86,119 +86,148 @@
             },
             "output": [
                 {
-                    "data_path": "action_result.data.*.udp.*.cpe",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.udp.*.conf",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.udp.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.udp.*.port",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.port",
                     "data_type": "string",
                     "contains": [
                         "port"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.udp.*.state",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.state",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.udp.*.reason",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.reason",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.udp.*.product",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.service.name",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.udp.*.version",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.service.product",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.udp.*.extrainfo",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.cpe",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.tcp.*.cpe",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.scripts.*.name",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.tcp.*.conf",
+                    "data_path": "action_result.data.*.hosts.*.udp.ports.*.scripts.*.output",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.tcp.*.name",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.tcp.*.port",
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.port",
                     "data_type": "string",
                     "contains": [
                         "port"
+                    ],
+                    "example_values": [
+                        80
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.tcp.*.state",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.tcp.*.reason",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.tcp.*.product",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.tcp.*.version",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.tcp.*.extrainfo",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.hostscript.*.id",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.hostscript.*.output.*",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.status.state",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.status.reason",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.hostnames.*.type",
-                    "data_type": "string"
-                },
-                {
-                    "data_path": "action_result.data.*.hostnames.*.name",
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.state",
                     "data_type": "string",
-                    "contains": [
-                        "host name"
+                    "example_values": [
+                        "open"
                     ]
                 },
                 {
-                    "data_path": "action_result.data.*.vendor",
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.reason",
+                    "data_type": "string",
+                    "example_values": [
+                        "syn-ack"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.service.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "http"
+                    ],
+                    "contains": [
+                        "url"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.service.product",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.cpe",
+                    "data_type": "string",
+                    "example_values": [
+                        ""
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.scripts.*.name",
                     "data_type": "string"
                 },
                 {
-                    "data_path": "action_result.data.*.addresses.ipv4.*.ip",
+                    "data_path": "action_result.data.*.hosts.*.tcp.ports.*.scripts.*.output",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.ip",
                     "data_type": "string",
                     "contains": [
                         "ip"
+                    ],
+                    "example_values": [
+                        "52.7.97.246"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.addrtype",
+                    "data_type": "string",
+                    "example_values": [
+                        "ipv4",
+                        "ipv6"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.scripts.*.name",
+                    "data_type": "string",
+                    "example_values": [
+                        "dns-brute"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.scripts.*.output",
+                    "data_type": "string",
+                    "example_values": [
+                        "\n  DNS Brute-force hostnames\n    www.phantom.us - 52.7.97.246\n"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.state",
+                    "data_type": "string",
+                    "example_values": [
+                        "up"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.reason",
+                    "data_type": "string",
+                    "example_values": [
+                        "syn-ack"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.hosts.*.hostnames.*.name",
+                    "data_type": "string",
+                    "contains": [
+                        "host name"
+                    ],
+                    "example_values": [
+                        "phantom.us"
                     ]
                 },
                 {
@@ -211,23 +240,57 @@
                 },
                 {
                     "data_path": "action_result.message",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "Start time: 21:44:25 10-8-2021, End time: 21:45:56 10-8-2021, Version: 1.04, Tolerant errors: None, Summary: Nmap done at Tue Aug 10 21:45:56 2021; 1 IP address (1 host up) scanned in 91.14 seconds, Exit status: success"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.endpoint_state",
-                    "data_type": "string"
+                    "data_path": "action_result.summary.start_time",
+                    "data_type": "string",
+                    "example_values": [
+                        "21:44:25 10-8-2021"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.total_open_tcp_ports",
-                    "data_type": "numeric"
+                    "data_path": "action_result.summary.end_time",
+                    "data_type": "string",
+                    "example_values": [
+                        "21:45:56 10-8-2021"
+                    ]
                 },
                 {
-                    "data_path": "action_result.summary.total_open_udp_ports",
-                    "data_type": "numeric"
+                    "data_path": "action_result.summary.version",
+                    "data_type": "string",
+                    "example_values": [
+                        "1.04"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.tolerant_errors",
+                    "data_type": "string",
+                    "example_values": []
+                },
+                {
+                    "data_path": "action_result.summary.summary",
+                    "data_type": "string",
+                    "example_values": [
+                        "Nmap done at Tue Aug 10 21:45:56 2021; 1 IP address (1 host up) scanned in 91.14 seconds"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary.exit_status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.portlist",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "1-1024"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.ip_hostname",
@@ -236,15 +299,24 @@
                         "ip",
                         "host name",
                         "url"
+                    ],
+                    "example_values": [
+                        "phantom.us"
                     ]
                 },
                 {
                     "data_path": "action_result.parameter.udp_scan",
-                    "data_type": "boolean"
+                    "data_type": "boolean",
+                    "example_values": [
+                        false
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.script",
-                    "data_type": "string"
+                    "data_type": "string",
+                    "example_values": [
+                        "dns-brute.nse"
+                    ]
                 },
                 {
                     "data_path": "action_result.parameter.script_args",
@@ -252,11 +324,17 @@
                 },
                 {
                     "data_path": "summary.total_objects",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 },
                 {
                     "data_path": "summary.total_objects_successful",
-                    "data_type": "numeric"
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
                 }
             ],
             "render": {

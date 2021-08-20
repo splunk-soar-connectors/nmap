@@ -1,4 +1,0 @@
-[submodule "nmap"]
-	path = nmap
-	url = git@cd.splunkdev.com:phantom-external/python-nmap.git 
-    ignore = dirty
