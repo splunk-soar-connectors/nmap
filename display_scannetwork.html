@@ -80,122 +80,95 @@
 
 <table class="nm-table-vertical">
 <tr>
-  <td><b>IP/Host Name</b></td>
+  <td><b>IP/Host Name Parameter</b></td>
   <td><a href="javascript:;" onclick="context_menu(this, [{'contains': {{ result.param_contains }}, 'value': '{{ result.param.ip_hostname }}' }], 0, {{ container.id }}, null, false);">
       {{ result.param.ip_hostname }}
       &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
   </a></td>
 </tr>
-<tr>
-  <td><b>State</b></td>
-  <td>
-  {% if result.data.status.state %}
-      {{ result.data.status.state }}
-  {% else %}
-      Unknown
-  {% endif %}
-  </td>
-</tr>
-<tr>
-  <td><b>Reason</b></td>
-  <td>
-  {% if result.data.status.reason %}
-      {{ result.data.status.reason }}
-  {% else %}
-      Unknown
-  {% endif %}
-  </td>
-</tr>
 </table>
 
 {% if result.status %}
-<h3 class="nm-h3-style">Addresses</h3>
+<h3 class="nm-h3-style">Hosts</h3>
 
-<table class="nm-table-horizontal">
-  <tr><th>IPv4</th></tr>
-  {% for curr_ip in result.data.addresses.ipv4 %}
-  <tr>
-    <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ curr_ip.ip }}' }], 0, {{ container.id }}, null, false);">
-        {{ curr_ip.ip }}
-        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-    </a></td>
-  </tr>
-  {% endfor %}
-</table>
+{% for host in result.data.hosts %}
+  <table class="nm-table-horizontal">
+    <tr><th>IP Address</th></tr>
+    <tr>
+      <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ host.ip }}' }], 0, {{ container.id }}, null, false);">
+          {{ host.ip }}
+          &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+      </a></td>
+    </tr>
+  </table>
 
-{% if result.data.hostnames %}
-<h3 class="nm-h3-style">Host Names</h3>
+  {% if host.hostnames %}
+  <h3 class="nm-h3-style">Host Names</h3>
 
-<table class="nm-table-horizontal">
-  <tr><th>Name</th><th>Type</th></tr>
-  {% for curr_hostname in result.data.hostnames %}
-  <tr>
-    <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['host name'], 'value': '{{ curr_hostname.name }}' }], 0, {{ container.id }}, null, false);">
-        {{ curr_hostname.name }}
-        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-    </a></td>
-    <td>{{ curr_hostname.type }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
-
-{% if result.data.hostscript %}
-<h3 class="nm-h3-style">Scripts</h3>
-{% for script in result.data.hostscript %}
-    <h4 class="nm-h4-style">{{ script.id }}</h4>
-    <p>
-    {% for line in script.output %}
-       {{ line }}<br/>
+  <table class="nm-table-horizontal">
+    <tr><th>Name</th></tr>
+    {% for curr_hostname in host.hostnames %}
+    <tr>
+      <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['host name'], 'value': '{{ curr_hostname.name }}' }], 0, {{ container.id }}, null, false);">
+          {{ curr_hostname.name }}
+          &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+      </a></td>
+    </tr>
     {% endfor %}
-    </p>
-{% endfor %}
-{% endif %}
+  </table>
+  {% endif %}
 
-<h3 class="nm-h3-style">Ports</h3>
-{% if result.data.tcp %}
-<h2 class="nm-h3-style">TCP</h2>
-<table class="nm-table-horizontal">
-  <tr><th>Port</th><th>Name</th><th>Product</th><th>Version</th><th>Reason</th><th>State</th><th>Extra Info</th><th>CPE</th></tr>
-  {% for curr_port in result.data.tcp %}
-  <tr>
-    <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port }}' }], 0, {{ container.id }}, null, false);">
-        {{ curr_port.port }}
-        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-    </a></td>
-    <td>{{ curr_port.name }}</td>
-    <td>{{ curr_port.product }}</td>
-    <td>{{ curr_port.version }}</td>
-    <td>{{ curr_port.reason }}</td>
-    <td>{{ curr_port.state }}</td>
-    <td>{{ curr_port.extrainfo }}</td>
-    <td>{{ curr_port.cpe }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
-{% if result.data.udp %}
-<h2 class="nm-h3-style">UDP</h2>
-<table class="nm-table-horizontal">
-  <tr><th>Port</th><th>Name</th><th>Product</th><th>Version</th><th>Reason</th><th>State</th><th>Extra Info</th><th>CPE</th><th>Conf</th></tr>
-  {% for curr_port in result.data.udp %}
-  <tr>
-    <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port }}' }], 0, {{ container.id }}, null, false);">
-        {{ curr_port.port }}
-        &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
-    </a></td>
-    <td>{{ curr_port.name }}</td>
-    <td>{{ curr_port.product }}</td>
-    <td>{{ curr_port.version }}</td>
-    <td>{{ curr_port.reason }}</td>
-    <td>{{ curr_port.state }}</td>
-    <td>{{ curr_port.extrainfo }}</td>
-    <td>{{ curr_port.cpe }}</td>
-    <td>{{ curr_port.conf }}</td>
-  </tr>
-  {% endfor %}
-</table>
-{% endif %}
+  <h3 class="nm-h3-style">Ports</h3>
+  {% if host.udp %}
+    <h2 class="nm-h3-style">UDP</h2>
+    <table class="nm-table-horizontal">
+      <tr><th>Port</th><th>Name</th><th>Product</th><th>Reason</th><th>State</th><th>CPE</th></tr>
+      {% for curr_port in host.udp.ports %}
+      <tr>
+        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port }}' }], 0, {{ container.id }}, null, false);">
+            {{ curr_port.port }}
+            &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+        </a></td>
+        <td>{{ curr_port.service.name }}</td>
+        <td>{{ curr_port.service.product }}</td>
+        <td>{{ curr_port.reason }}</td>
+        <td>{{ curr_port.state }}</td>
+        <td>{{ curr_port.cpe }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+  {% if host.tcp %}
+    <h2 class="nm-h3-style">TCP</h2>
+    <table class="nm-table-horizontal">
+      <tr><th>Port</th><th>Name</th><th>Product</th><th>Reason</th><th>State</th><th>CPE</th></tr>
+      {% for curr_port in host.tcp.ports %}
+      <tr>
+        <td><a href="javascript:;" onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port }}' }], 0, {{ container.id }}, null, false);">
+            {{ curr_port.port }}
+            &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
+        </a></td>
+        <td>{{ curr_port.service.name }}</td>
+        <td>{{ curr_port.service.product }}</td>
+        <td>{{ curr_port.reason }}</td>
+        <td>{{ curr_port.state }}</td>
+        <td>{{ curr_port.cpe }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+  {% if host.scripts %}
+    <h3 class="nm-h3-style">Scripts</h3>
+    {% for script in host.scripts %}
+        <h4 class="nm-h4-style">{{ script.name }}</h4>
+        <p>
+          {{ script.output }}
+        </p>
+    {% endfor %}
+  {% endif %}
+<p>&nbsp;</p>
+{% endfor %} <!-- loop for each host end -->
+
 {% endif %}
 <!------------------- if status is True ---------------------->
 
