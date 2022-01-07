@@ -1,5 +1,5 @@
 Splunk SOAR NMAP Scanner
-Copyright 2021 Splunk Inc.
+Copyright (c) 2016-2021 Splunk Inc.
 
 Third-party Software Attributions:
 
@@ -14,8 +14,3 @@ License: Academic 2.1
 License: MIT
 Copyright 2003-2004 Lawrence E
 Copyright 2006 Bob Ippolito
-
-Library: pudb
-Version: 2019.2
-License: MIT
-Copyright 2009 Andreas Kloeckner and contributors
