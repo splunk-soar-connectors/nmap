@@ -281,7 +281,7 @@ if __name__ == '__main__':
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -293,4 +293,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(ret_val)
 
-    exit(0)
+    sys.exit(0)
