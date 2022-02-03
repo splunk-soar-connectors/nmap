@@ -5,14 +5,14 @@
     "publisher": "Splunk",
     "package_name": "phantom_nmap",
     "type": "information",
-    "license": "Copyright (c) 2016-2021 Splunk Inc.",
+    "license": "Copyright (c) 2016-2022 Splunk Inc.",
     "main_module": "nmap_connector.py",
     "app_version": "3.0.10",
     "utctime_updated": "2022-01-07T22:23:50.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
     "product_version_regex": ".*",
-    "min_phantom_version": "4.9.39220",
+    "min_phantom_version": "5.1.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Nmap 6.40"
