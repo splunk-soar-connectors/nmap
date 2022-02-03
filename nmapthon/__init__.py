@@ -1,3 +1,4 @@
-from ._nmapthon import NmapScanner, AsyncNmapScanner
 from nmapthon import engine
-from nmapthon.exceptions import NmapScanError, InvalidArgumentError, InvalidPortError, MalformedIpAddressError, EngineError
+from nmapthon.exceptions import EngineError, InvalidArgumentError, InvalidPortError, MalformedIpAddressError, NmapScanError
+
+from ._nmapthon import AsyncNmapScanner, NmapScanner

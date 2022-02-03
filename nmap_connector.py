@@ -15,21 +15,19 @@
 #
 #
 # Phantom App imports
-import phantom.app as phantom
-
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-import phantom.utils as ph_utils
-
-from nmap_consts import *
-
-import simplejson as json
-import nmapthon
-from nmapthon.exceptions import NmapScanError
+import ipaddress
+import socket
 import traceback
 
-import socket
-import ipaddress
+import phantom.app as phantom
+import phantom.utils as ph_utils
+import simplejson as json
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
+
+import nmapthon
+from nmap_consts import *
+from nmapthon.exceptions import NmapScanError
 
 
 # Define the App Class
@@ -276,12 +274,13 @@ class NmapConnector(BaseConnector):
 if __name__ == '__main__':
 
     import sys
+
     import pudb
     pudb.set_trace()
 
     if (len(sys.argv) < 2):
         print("No test json specified as input")
-        sys.exit(0)
+        exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -293,4 +292,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(ret_val)
 
-    sys.exit(0)
+    exit(0)
