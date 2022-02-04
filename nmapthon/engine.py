@@ -20,11 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import nmapthon._target_utils as tu
+from inspect import signature
+
 import nmapthon._port_utils as pu
+import nmapthon._target_utils as tu
 
 from .exceptions import EngineError
-from inspect import signature
 
 
 class _PyNSEHostScript:
@@ -296,7 +297,7 @@ class PyNSEEngine:
         :type port: int, str
         :type state: str
         """
-        
+
         for i in self.port_scripts:
             if target in i.targets or i.targets == '*':
                 if (i.proto == '*' or proto == i.proto) and int(port) in i.ports and state in i.states:
