@@ -19,15 +19,15 @@ import ipaddress
 import socket
 import traceback
 
+import nmapthon
 import phantom.app as phantom
 import phantom.utils as ph_utils
 import simplejson as json
+from nmapthon.exceptions import NmapScanError
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
-import nmapthon
 from nmap_consts import *
-from nmapthon.exceptions import NmapScanError
 
 
 # Define the App Class
