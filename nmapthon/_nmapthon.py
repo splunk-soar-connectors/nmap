@@ -23,6 +23,7 @@
 import multiprocessing
 import subprocess
 import threading
+
 import defusedxml.ElementTree as ET
 
 import nmapthon._port_utils as pu
@@ -598,7 +599,7 @@ class NmapScanner:
     @classmethod
     def from_xml(cls, xml_file):
         """ Creates an NmapScanner instance from an existing nmap XML file.
-        
+
         :param xml_file: XML file to import into the object
         :type xml_file: str
         :returns: NmapScanner created from XML content
@@ -611,13 +612,13 @@ class NmapScanner:
 
         # Create instance with default None values
         instance = cls(None)
-        
-        # Import file, if any error raise NmapScanError 
+
+        # Import file, if any error raise NmapScanError
         content = None
 
         with open(xml_file) as f:
             content = f.read()
-        
+
         if content is None or content == '':
             raise NmapScanError('Could not load content from {}'.format(xml_file))
 
@@ -951,7 +952,7 @@ class NmapScanner:
 
             for proto in self._result[i]['protocols']:
                 for port in self._result[i]['protocols'][proto]:
-                    script_list = [x for x in self.engine.get_suitable_port_scripts(i, 
+                    script_list = [x for x in self.engine.get_suitable_port_scripts(i,
                                   proto, port, self._result[i]['protocols'][proto][str(port)]['state'])]
 
                     if len(script_list):

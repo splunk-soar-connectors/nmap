@@ -102,7 +102,7 @@ def single_port_list(port_list):
     new_port_list = []
     for i in list(map(parse_ports_from_str, port_list)):
         new_port_list.extend(i)
-    
+
     return list(set(new_port_list))
 
 
