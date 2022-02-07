@@ -2,7 +2,7 @@
 # NMAP Scanner
 
 Publisher: Splunk  
-Connector Version: 3\.0\.11  
+Connector Version: 3\.0\.12  
 Product Vendor: Generic  
 Product Name: NMAP  
 Product Version Supported (regex): "\.\*"  

@@ -7,8 +7,8 @@
     "type": "information",
     "license": "Copyright (c) 2016-2022 Splunk Inc.",
     "main_module": "nmap_connector.py",
-    "app_version": "3.0.11",
-    "utctime_updated": "2022-02-04T01:55:20.000000Z",
+    "app_version": "3.0.12",
+    "utctime_updated": "2022-02-04T20:21:53.000000Z",
     "product_vendor": "Generic",
     "product_name": "NMAP",
     "product_version_regex": ".*",
@@ -355,6 +355,10 @@
                 "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
             },
             {
+                "module": "nmapthon",
+                "input_file": "wheels/py3/nmapthon-1.6.3-py3-none-any.whl"
+            },
+            {
                 "module": "simplejson",
                 "input_file": "wheels/py36/simplejson-3.17.2-cp36-cp36m-manylinux2010_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
             }
@@ -365,6 +369,10 @@
             {
                 "module": "defusedxml",
                 "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "nmapthon",
+                "input_file": "wheels/py3/nmapthon-1.6.3-py3-none-any.whl"
             },
             {
                 "module": "simplejson",
