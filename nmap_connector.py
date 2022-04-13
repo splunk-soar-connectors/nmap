@@ -127,7 +127,7 @@ class NmapConnector(BaseConnector):
 
         if udp_flag and not nm.finished():
             return action_result.set_status(phantom.APP_ERROR, "UDP scan failed: {}".format(nm.fatal_error()))
-        
+
         if udp_flag:
             result = nm.get_result()
         # parse results
@@ -159,7 +159,7 @@ class NmapConnector(BaseConnector):
                 host_output['udp'] = {}
                 scanned_udp_ports = scanned_host.udp_ports()
                 host_output['udp']["ports"] = self._retrieve_ports_information(scanned_udp_ports)
-                
+
                 # get script output for host
                 if script:
                     host_output['scripts'] = []
