@@ -2,11 +2,11 @@
 # NMAP Scanner
 
 Publisher: Splunk  
-Connector Version: 3\.0\.12  
+Connector Version: 3\.0\.13  
 Product Vendor: Generic  
 Product Name: NMAP  
 Product Version Supported (regex): "\.\*"  
-Minimum Product Version: 5\.1\.0  
+Minimum Product Version: 5\.2\.0  
 
 This app integrates with NMAP in order to provide detailed network information
 
