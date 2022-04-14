@@ -8,9 +8,9 @@ Version: 0.6.0
 License: Python 2.0
 Copyright 2013-2017 by Christian Heimes <christian@python.org>
 
-Library: nmapthon
-Version: 1.6.3
-License: Unknown
+Library: nmapthon2
+Version: 0.1.5
+License: Apache Software License (Apache-2.0)
 Unknown copyright
 
 Library: simplejson
