@@ -12,7 +12,7 @@
     "product_vendor": "Generic",
     "product_name": "NMAP",
     "product_version_regex": ".*",
-    "min_phantom_version": "5.1.0",
+    "min_phantom_version": "5.2.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Nmap 6.40"
@@ -355,8 +355,8 @@
                 "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
             },
             {
-                "module": "nmapthon",
-                "input_file": "wheels/py3/nmapthon-1.6.3-py3-none-any.whl"
+                "module": "nmapthon2",
+                "input_file": "wheels/py3/nmapthon2-0.1.5-py3-none-any.whl"
             },
             {
                 "module": "simplejson",
@@ -371,8 +371,8 @@
                 "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
             },
             {
-                "module": "nmapthon",
-                "input_file": "wheels/py3/nmapthon-1.6.3-py3-none-any.whl"
+                "module": "nmapthon2",
+                "input_file": "wheels/py3/nmapthon2-0.1.5-py3-none-any.whl"
             },
             {
                 "module": "simplejson",

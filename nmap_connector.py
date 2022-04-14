@@ -19,11 +19,11 @@ import ipaddress
 import socket
 import traceback
 
-import nmapthon
+import nmapthon2
 import phantom.app as phantom
 import phantom.utils as ph_utils
 import simplejson as json
-from nmapthon.exceptions import NmapScanError
+from nmapthon2.exceptions import NmapScanError
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 
@@ -40,7 +40,7 @@ class NmapConnector(BaseConnector):
         self.save_progress('In action handler for: {0}'.format(self.get_action_identifier()))
         try:
             # This call is specific to the nmap python module.  It is instantiating the scanner.
-            nm = nmapthon.NmapScanner([self._ip_address], ports=self._portlist)
+            nm = nmapthon2.NmapScanner()
         except Exception as e:
             self.save_progress('Unable to instantiate NmapScanner object. You might need to yum install nmap. Error: {}'.format(e))
             self.save_progress("Test Connectivity Failed")
@@ -48,7 +48,7 @@ class NmapConnector(BaseConnector):
 
         try:
             self.save_progress("Scanning IP: {}, Ports: {}".format(self._ip_address, self._portlist))
-            nm.run()
+            nm.scan([self._ip_address], ports=self._portlist)
 
             self.save_progress("Test Connectivity Passed")
         except Exception as e:
@@ -101,10 +101,10 @@ class NmapConnector(BaseConnector):
         try:
             if udp_flag:
                 # This call is specific to the nmap python module.  It is instantiating the scanner.
-                nm = nmapthon.AsyncNmapScanner(target=ip_hostname, ports=portlist, arguments=args)
+                nm = nmapthon2.NmapAsyncScanner()
             else:
                 # This call is specific to the nmap python module.  It is instantiating the scanner.
-                nm = nmapthon.NmapScanner(targets=ip_hostname, ports=portlist, arguments=args)
+                nm = nmapthon2.NmapScanner()
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR,
                     'Unable to instantiate NmapScanner object. You might need to yum install nmap', e)
@@ -113,7 +113,7 @@ class NmapConnector(BaseConnector):
         # results in nmap_output
         nmap_output = {}
         try:
-            nm.run()
+            result = nm.scan(targets=ip_hostname, ports=portlist, arguments=" ".join(args))
         except NmapScanError as scan_err:
             self.save_progress("Error: {}".format(traceback.format_exc()))
             self.save_progress("Scan failed with error: {}".format(scan_err))
@@ -125,18 +125,20 @@ class NmapConnector(BaseConnector):
         if udp_flag:
             nm.wait()
 
-        if udp_flag and not nm.finished_successfully():
+        if udp_flag and not nm.finished():
             return action_result.set_status(phantom.APP_ERROR, "UDP scan failed: {}".format(nm.fatal_error()))
 
+        if udp_flag:
+            result = nm.get_result()
         # parse results
         try:
             summary = {}
-            summary['start_time'] = nm.start_time
-            summary['end_time'] = nm.end_time
-            summary['version'] = nm.version
-            summary['tolerant_errors'] = nm.tolerant_errors
-            summary['summary'] = nm.summary
-            summary['exit_status'] = nm.exit_status
+            summary['start_time'] = result.start_datetime.strftime("%H:%M:%S %d-%-m-%Y")
+            summary['end_time'] = result.end_datetime.strftime("%H:%M:%S %d-%-m-%Y")
+            summary['version'] = result.version
+            summary['tolerant_errors'] = result.tolerant_errors
+            summary['summary'] = result.summary
+            summary['exit_status'] = result.exit_status
             action_result.update_summary(summary)
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Exception while retrieving results from NMAP scan: {}".format(e))
@@ -146,64 +148,37 @@ class NmapConnector(BaseConnector):
 
         try:
             nmap_output['hosts'] = []
-            for scanned_host in nm.scanned_hosts():
+            for scanned_host in result.scanned_hosts():
                 host_output = {}
-                # for every protocol scanned for each host
-                for proto in nm.all_protocols(scanned_host):
-                    host_output[proto] = {}
-                    # for each scanned port
-                    host_output[proto]["ports"] = []
-                    for port in nm.scanned_ports(scanned_host, proto):
-                        port_data = {}
-                        port_data['port'] = port
+                # get ports information for tcp protocol
+                host_output['tcp'] = {}
+                scanned_tcp_ports = scanned_host.tcp_ports()
+                host_output['tcp']["ports"] = self._retrieve_ports_information(scanned_tcp_ports)
 
-                        state, reason = nm.port_state(scanned_host, proto, port)
-                        port_data['state'] = state
-                        port_data['reason'] = reason
-
-                        # get script output
-                        port_data['scripts'] = self._retrieve_port_script_output(nm, scanned_host, proto, port)
-
-                        # get service info
-                        service = nm.service(scanned_host, proto, port)
-
-                        if service is not None:
-                            port_data['service'] = {}
-                            port_data['service']['name'] = service.name
-                            port_data['service']['product'] = service.product
-
-                            # get CPEs
-                            cpe_str = ""
-                            for cpe in service.all_cpes():
-                                cpe_str += cpe
-                            port_data['cpe'] = cpe_str
-
-                            port_data['service']['scripts'] = []
-                            for name, output in service.all_scripts():
-                                script_data = {}
-                                script_data['name'] = name
-                                script_data['output'] = output
-
-                                port_data['service']['scripts'].append(script_data)
-
-                        host_output[proto]["ports"].append(port_data)
+                # get ports information for udp protocol
+                host_output['udp'] = {}
+                scanned_udp_ports = scanned_host.udp_ports()
+                host_output['udp']["ports"] = self._retrieve_ports_information(scanned_udp_ports)
 
                 # get script output for host
                 if script:
                     host_output['scripts'] = []
-                    for script_name, script_output in nm.host_scripts(scanned_host):
+                    for script_name, script_output in scanned_host.all_scripts():
                         host_output['scripts'].append({
                             'name': script_name,
                             'output': script_output
                         })
 
-                host_output['state'] = nm.state(scanned_host)
-                host_output['reason'] = nm.reason(scanned_host)
-                host_output['addrtype'] = nm.addrtype(scanned_host)
+                host_output['state'] = scanned_host.state
+                host_output['reason'] = scanned_host.reason
                 host_output['hostnames'] = [
-                    {'name': hostname} for hostname in nm.hostnames(scanned_host)
+                    {'name': hostname} for hostname in scanned_host.hostnames()
                 ]
-                host_output['ip'] = scanned_host
+                # get ipv4 or ipv6 for host
+                host_ipv4 = scanned_host.ipv4
+                host_ipv6 = scanned_host.ipv6
+                host_output['addrtype'] = "ipv4" if host_ipv4 else "ipv6"
+                host_output['ip'] = host_ipv4 if host_ipv4 else host_ipv6
                 nmap_output['hosts'].append(host_output)
         except NmapScanError as scan_err:
             return action_result.set_status(phantom.APP_ERROR, "Error while scanning: {}".format(scan_err))
@@ -213,9 +188,45 @@ class NmapConnector(BaseConnector):
         action_result.add_data(nmap_output)
         return action_result.set_status(phantom.APP_SUCCESS)
 
-    def _retrieve_port_script_output(self, nm, host, proto, port):
+    def _retrieve_ports_information(self, ports):
+        all_port_data = []
+        for port in ports:
+            port_data = {}
+            port_data['port'] = port.number
+            port_data['state'] = port.state
+            port_data['reason'] = port.reason
+
+            # get script output
+            port_data['scripts'] = self._retrieve_port_script_output(port)
+
+            # get service info
+            service = port.get_service()
+
+            if service is not None:
+                port_data['service'] = {}
+                port_data['service']['name'] = service.name
+                port_data['service']['product'] = service.product
+
+                # get CPEs
+                cpe_str = ""
+                for cpe in service.cpes:
+                    cpe_str += cpe
+                port_data['cpe'] = cpe_str
+
+                port_data['service']['scripts'] = []
+                for name, output in service.all_scripts():
+                    script_data = {}
+                    script_data['name'] = name
+                    script_data['output'] = output
+
+                    port_data['service']['scripts'].append(script_data)
+            all_port_data.append(port_data)
+
+        return all_port_data
+
+    def _retrieve_port_script_output(self, port):
         scripts = []
-        for script_name, script_output in nm.port_scripts(host, proto, port):
+        for script_name, script_output in port.service.all_scripts():
             scripts.append({
                 'name': script_name,
                 'output': script_output
