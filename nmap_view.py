@@ -1,6 +1,6 @@
 # File: nmap_view.py
 #
-# Copyright (c) 2016-2022 Splunk Inc.
+# Copyright (c) 2016-2025 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,35 +16,32 @@ import phantom.utils as ph_utils
 
 
 def get_ctx_result(result):
-
     ctx_result = {}
     param = result.get_param()
     data = result.get_data()
     status = result.get_status()
 
-    ctx_result['param'] = param
-    ip_hostname = param['ip_hostname']
+    ctx_result["param"] = param
+    ip_hostname = param["ip_hostname"]
 
-    ctx_result['param_contains'] = ['ip']
+    ctx_result["param_contains"] = ["ip"]
 
-    if (ph_utils.is_hostname(ip_hostname) or ph_utils.is_domain(ip_hostname)):
-        ctx_result['param_contains'] = ['host name']
+    if ph_utils.is_hostname(ip_hostname) or ph_utils.is_domain(ip_hostname):
+        ctx_result["param_contains"] = ["host name"]
 
-    ctx_result['status'] = status
-    if (data):
-        ctx_result['data'] = data[0]
+    ctx_result["status"] = status
+    if data:
+        ctx_result["data"] = data[0]
 
     return ctx_result
 
 
 def display_scannetwork(provides, all_app_runs, context):
-
-    context['results'] = results = []
+    context["results"] = results = []
     for summary, action_results in all_app_runs:
         for result in action_results:
-
             ctx_result = get_ctx_result(result)
-            if (not ctx_result):
+            if not ctx_result:
                 continue
             results.append(ctx_result)
-    return 'display_scannetwork.html'
+    return "display_scannetwork.html"
