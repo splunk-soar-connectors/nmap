@@ -5,7 +5,7 @@
     "publisher": "Splunk",
     "package_name": "phantom_nmap",
     "type": "information",
-    "license": "Copyright (c) 2016-2022 Splunk Inc.",
+    "license": "Copyright (c) 2016-2025 Splunk Inc.",
     "main_module": "nmap_connector.py",
     "app_version": "3.0.13",
     "utctime_updated": "2022-04-14T21:01:37.000000Z",
