@@ -348,22 +348,6 @@
             "versions": "EQ(*)"
         }
     ],
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "defusedxml",
-                "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
-            },
-            {
-                "module": "nmapthon2",
-                "input_file": "wheels/py3/nmapthon2-0.1.5-py3-none-any.whl"
-            },
-            {
-                "module": "simplejson",
-                "input_file": "wheels/py36/simplejson-3.17.2-cp36-cp36m-manylinux2010_x86_64.manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
-            }
-        ]
-    },
     "pip39_dependencies": {
         "wheel": [
             {
@@ -376,7 +360,23 @@
             },
             {
                 "module": "simplejson",
-                "input_file": "wheels/py39/simplejson-3.17.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+                "input_file": "wheels/py39/simplejson-3.17.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl"
+            }
+        ]
+    },
+    "pip313_dependencies": {
+        "wheel": [
+            {
+                "module": "defusedxml",
+                "input_file": "wheels/shared/defusedxml-0.6.0-py2.py3-none-any.whl"
+            },
+            {
+                "module": "nmapthon2",
+                "input_file": "wheels/py3/nmapthon2-0.1.5-py3-none-any.whl"
+            },
+            {
+                "module": "simplejson",
+                "input_file": "wheels/py313/simplejson-3.17.2-cp313-cp313-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_28_x86_64.whl"
             }
         ]
     }
