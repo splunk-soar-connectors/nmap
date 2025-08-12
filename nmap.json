@@ -20,7 +20,7 @@
     "logo": "logo_nmap.svg",
     "logo_dark": "logo_nmap_dark.svg",
     "rpm_dependencies": "nmap",
-    "python_version": "3",
+    "python_version": "3.9, 3.13",
     "configuration": {
         "ip_address": {
             "data_type": "string",
