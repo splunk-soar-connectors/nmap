@@ -1,9 +1,9 @@
 # NMAP Scanner
 
-Publisher: Splunk \
-Connector Version: 3.0.13 \
-Product Vendor: Generic \
-Product Name: NMAP \
+Publisher: Splunk <br>
+Connector Version: 3.0.13 <br>
+Product Vendor: Generic <br>
+Product Name: NMAP <br>
 Minimum Product Version: 5.2.0
 
 This app integrates with NMAP in order to provide detailed network information
@@ -19,14 +19,14 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity. This action runs nmap on the IP mentioned in the configuration parameters \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity. This action runs nmap on the IP mentioned in the configuration parameters <br>
 [scan network](#action-scan-network) - Execute NMAP scan against a host or subnet
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity. This action runs nmap on the IP mentioned in the configuration parameters
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -41,7 +41,7 @@ No Output
 
 Execute NMAP scan against a host or subnet
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 <p>If <b>udp_scan</b> is false (it is by default), this action will use the following NMAP command line options: nmap -oX - -sV IP_ADDRESS.</p><p>If <b>udp_scan</b> is true, this action will use the following NMAP command line options: nmap -oX - -sU --privileged IP_ADDRESS.</p><p>Performing a UDP scan requires elevated permissions.  Privileged permissions can be used, if and only if the user first runs this command as root on Phantom:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip /usr/bin/nmap</code></p><p><b>Warning:</b> UDP function is limited to root for very good reason.  This is dangerous. The NMAP Scripting Engine (NSE) allows scripts to sniff the network, change firewall rules and interface configuration, or exploit vulnerabilities including on localhost. It's possible, especially with elevated capabilities, for a clever person to use NMAP and NSE to escalate to full root privileges. If you do not understand these risks, do not do this.</p><p>To undo the setcap command from before, just run:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service-eip /usr/bin/nmap</code><br><p>action_result.data.\*.udp.\* data paths will only be present if <b>udp_scan</b> is true.  They replace action_result.data.\*.tcp.\* data paths.</p>
