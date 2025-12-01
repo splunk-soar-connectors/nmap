@@ -110,7 +110,9 @@ class NmapConnector(BaseConnector):
         # results in nmap_output
         nmap_output = {}
         try:
-            result = nm.scan(targets=ip_hostname, ports=portlist, arguments=" ".join(args))
+            # For async scanner (UDP), scan() returns None and result is retrieved later
+            # For regular scanner, scan() returns the result directly
+            result = nm.scan(targets=ip_hostname, ports=portlist, arguments=" ".join(args))  # pylint: disable=assignment-from-none
         except NmapScanError as scan_err:
             self.save_progress(f"Error: {traceback.format_exc()}")
             self.save_progress(f"Scan failed with error: {scan_err}")
@@ -121,11 +123,9 @@ class NmapConnector(BaseConnector):
 
         if udp_flag:
             nm.wait()
-
-        if udp_flag and not nm.finished():
-            return action_result.set_status(phantom.APP_ERROR, f"UDP scan failed: {nm.fatal_error()}")
-
-        if udp_flag:
+            if not nm.finished():
+                error_msg = getattr(nm, "_stored_error_buffer", "Unknown error - scan did not complete")
+                return action_result.set_status(phantom.APP_ERROR, f"UDP scan failed: {error_msg}")
             result = nm.get_result()
         # parse results
         try:
