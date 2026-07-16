@@ -16,6 +16,7 @@
 #
 # Phantom App imports
 import ipaddress
+import re
 import socket
 import traceback
 
@@ -74,6 +75,8 @@ class NmapConnector(BaseConnector):
             ip_hostname = ph_utils.get_host_from_url(ip_hostname)
 
         portlist = param.get(NMAP_JSON_PORTLIST)
+        if portlist is not None and not self._is_valid_portlist(portlist):
+            return action_result.set_status(phantom.APP_ERROR, "Port list must contain only ports and comma-separated port ranges")
         args = []
 
         if self._is_valid_ipv6_address(ip_hostname):
@@ -236,6 +239,19 @@ class NmapConnector(BaseConnector):
         # TODO: Implement this to validate ip ranges etc.
         return True
 
+    @staticmethod
+    def _is_valid_portlist(portlist):
+        portlist = str(portlist)
+        if not re.fullmatch(r"\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*", portlist):
+            return False
+        for entry in portlist.split(","):
+            bounds = [int(value) for value in entry.split("-")]
+            if any(value < 1 or value > 65535 for value in bounds):
+                return False
+            if len(bounds) == 2 and bounds[0] > bounds[1]:
+                return False
+        return True
+
     def initialize(self):
         """Don't use BaseConnector's validations, for ip use our own"""
         self.set_validator("ip", self.validate_ip)
@@ -243,6 +259,9 @@ class NmapConnector(BaseConnector):
         config = self.get_config()
         self._ip_address = config.get("ip_address", NMAP_DEFAULT_IP_CONNECTIVITY)
         self._portlist = config.get("ports", NMAP_DEFAULT_PORTLIST_CONNECTIVITY)
+
+        if not self._is_valid_portlist(self._portlist):
+            return self.set_status(phantom.APP_ERROR, "Please provide a valid port list in the configuration parameters")
 
         try:
             ipaddress.ip_address(self._ip_address)
