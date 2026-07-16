@@ -42,7 +42,7 @@ No Output
 Execute NMAP scan against a host or subnet
 
 Type: **investigate** <br>
-Read only: **True**
+Read only: **False**
 
 <p>If <b>udp_scan</b> is false (it is by default), this action will use the following NMAP command line options: nmap -oX - -sV IP_ADDRESS.</p><p>If <b>udp_scan</b> is true, this action will use the following NMAP command line options: nmap -oX - -sU --privileged IP_ADDRESS.</p><p>Performing a UDP scan requires elevated permissions.  Privileged permissions can be used, if and only if the user first runs this command as root on Phantom:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service+eip /usr/bin/nmap</code></p><p><b>Warning:</b> UDP function is limited to root for very good reason.  This is dangerous. The NMAP Scripting Engine (NSE) allows scripts to sniff the network, change firewall rules and interface configuration, or exploit vulnerabilities including on localhost. It's possible, especially with elevated capabilities, for a clever person to use NMAP and NSE to escalate to full root privileges. If you do not understand these risks, do not do this.</p><p>To undo the setcap command from before, just run:<br><code>sudo setcap cap_net_raw,cap_net_admin,cap_net_bind_service-eip /usr/bin/nmap</code><br><p>action_result.data.\*.udp.\* data paths will only be present if <b>udp_scan</b> is true.  They replace action_result.data.\*.tcp.\* data paths.</p>
 
@@ -103,7 +103,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
