@@ -1,4 +1,1 @@
 **Unreleased**
-
-* Validated configuration and action port lists before invoking nmap. (PAPP-37991)
-* Escaped widget values embedded in JavaScript string contexts. (PAPP-37991)
