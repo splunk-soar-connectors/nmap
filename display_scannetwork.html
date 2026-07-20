@@ -11,7 +11,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!-- File: display_scannetwork.html
-  Copyright (c) 2016-2025 Splunk Inc.
+  Copyright (c) 2016-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ and limitations under the License.
           </td>
           <td>
             <a href="javascript:;"
-               onclick="context_menu(this, [{'contains': {{ result.param_contains }}, 'value': '{{ result.param.ip_hostname }}' }], 0, {{ container.id }}, null, false);">
+               onclick="context_menu(this, [{'contains': {{ result.param_contains }}, 'value': '{{ result.param.ip_hostname|escapejs }}' }], 0, {{ container.id }}, null, false);">
               {{ result.param.ip_hostname }}
               &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
             </a>
@@ -112,7 +112,7 @@ and limitations under the License.
             <tr>
               <td>
                 <a href="javascript:;"
-                   onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ host.ip }}' }], 0, {{ container.id }}, null, false);">
+                   onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ host.ip|escapejs }}' }], 0, {{ container.id }}, null, false);">
                   {{ host.ip }}
                   &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                 </a>
@@ -129,7 +129,7 @@ and limitations under the License.
                 <tr>
                   <td>
                     <a href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['host name'], 'value': '{{ curr_hostname.name }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['host name'], 'value': '{{ curr_hostname.name|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ curr_hostname.name }}
                       &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                     </a>
@@ -154,7 +154,7 @@ and limitations under the License.
                 <tr>
                   <td>
                     <a href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ curr_port.port }}
                       &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                     </a>
@@ -183,7 +183,7 @@ and limitations under the License.
                 <tr>
                   <td>
                     <a href="javascript:;"
-                       onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port }}' }], 0, {{ container.id }}, null, false);">
+                       onclick="context_menu(this, [{'contains': ['port'], 'value': '{{ curr_port.port|escapejs }}' }], 0, {{ container.id }}, null, false);">
                       {{ curr_port.port }}
                       &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                     </a>
