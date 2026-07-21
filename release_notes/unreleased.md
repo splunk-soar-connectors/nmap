@@ -1,3 +1,1 @@
 **Unreleased**
-
-* Fixed scan network to return an action error instead of crashing on malformed URL targets.

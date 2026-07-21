@@ -1,7 +1,7 @@
 # NMAP Scanner
 
 Publisher: Splunk <br>
-Connector Version: 3.0.16 <br>
+Connector Version: 3.0.17 <br>
 Product Vendor: Generic <br>
 Product Name: NMAP <br>
 Minimum Product Version: 5.2.0
