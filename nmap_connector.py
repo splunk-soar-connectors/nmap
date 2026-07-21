@@ -72,7 +72,14 @@ class NmapConnector(BaseConnector):
 
         # PAPP-1802
         if ph_utils.is_url(ip_hostname):
-            ip_hostname = ph_utils.get_host_from_url(ip_hostname)
+            try:
+                ip_hostname = ph_utils.get_host_from_url(ip_hostname)
+            except ValueError as error:
+                return action_result.set_status(
+                    phantom.APP_ERROR,
+                    "Unable to extract a hostname from the provided URL",
+                    error,
+                )
 
         portlist = param.get(NMAP_JSON_PORTLIST)
         if portlist is not None and not self._is_valid_portlist(portlist):
