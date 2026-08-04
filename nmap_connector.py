@@ -228,7 +228,11 @@ class NmapConnector(BaseConnector):
 
     def _retrieve_port_script_output(self, port):
         scripts = []
-        for script_name, script_output in port.service.all_scripts():
+        service = port.get_service()
+        if service is None:
+            return scripts
+
+        for script_name, script_output in service.all_scripts():
             scripts.append({"name": script_name, "output": script_output})
 
         return scripts
