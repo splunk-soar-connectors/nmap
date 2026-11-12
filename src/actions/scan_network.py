@@ -14,14 +14,13 @@
 
 """Scan Network action."""
 
-import re
-
 from soar_sdk.abstract import SOARClient
-from soar_sdk.action_results import ActionOutput, OutputField
+from soar_sdk.action_results import ActionOutput, ActionResult, OutputField
 from soar_sdk.logging import getLogger
 from soar_sdk.params import Param, Params
 
 from ..app import Asset, app
+from ..helpers import get_nmap_binary, is_valid_portlist
 
 logger = getLogger()
 
@@ -101,7 +100,7 @@ class ScanSummary(ActionOutput):
 
 
 def nmap_scan(
-    params: ScanNetworkParams, soar: SOARClient, asset: Asset
+    params: ScanNetworkParams, soar: SOARClient[ScanSummary], asset: Asset
 ) -> ScanNetworkOutput:
     import ipaddress  # noqa: PLC0415
     from urllib.parse import urlsplit  # noqa: PLC0415
@@ -118,8 +117,10 @@ def nmap_scan(
             raise ValueError("Unable to extract a hostname from the provided URL")
         target = parsed.hostname
     portlist = params.portlist
-    if portlist is not None and not _is_valid_portlist(portlist):
-        raise ValueError("Port list must contain only ports and comma-separated port ranges")
+    if portlist is not None and not is_valid_portlist(portlist):
+        raise ValueError(
+            "Port list must contain only ports and comma-separated port ranges"
+        )
     try:
         ipaddress.ip_address(target)
         is_ipv6 = ":" in target
@@ -134,13 +135,22 @@ def nmap_scan(
         args.append(f"--script={params.script}")
         if params.script_args:
             args.extend(["--script-args", params.script_args])
+    nmap_binary = get_nmap_binary()
     try:
-        scanner = nmapthon2.NmapAsyncScanner() if params.udp_scan else nmapthon2.NmapScanner()
+        scanner = (
+            nmapthon2.NmapAsyncScanner(nmap_bin=nmap_binary)
+            if params.udp_scan
+            else nmapthon2.NmapScanner(nmap_bin=nmap_binary)
+        )
         result = scanner.scan(targets=target, ports=portlist, arguments=" ".join(args))
         if params.udp_scan:
             scanner.wait()
             if not scanner.finished():
-                raise RuntimeError(getattr(scanner, "_stored_error_buffer", "UDP scan did not complete"))
+                raise RuntimeError(
+                    getattr(
+                        scanner, "_stored_error_buffer", "UDP scan did not complete"
+                    )
+                )
             result = scanner.get_result()
     except NmapScanError as exc:
         soar.set_message(f"Scan failed: {exc}")
@@ -149,17 +159,24 @@ def nmap_scan(
         soar.set_message(f"Scan failed: {exc}")
         raise RuntimeError("Scan failed") from exc
 
+    summary = None
     try:
-        summary = {
+        summary_data = {
             "start_time": result.start_datetime.strftime("%H:%M:%S %d-%-m-%Y"),
             "end_time": result.end_datetime.strftime("%H:%M:%S %d-%-m-%Y"),
             "version": str(result.version),
-            "tolerant_errors": str(result.tolerant_errors) if result.tolerant_errors else None,
+            "tolerant_errors": str(result.tolerant_errors)
+            if result.tolerant_errors
+            else None,
             "summary": str(result.summary),
             "exit_status": str(result.exit_status),
         }
+        summary = ScanSummary(**summary_data)
+        soar.set_summary(summary)
         if result.tolerant_errors:
-            raise RuntimeError(f"Error(s) occurred while scanning: {result.tolerant_errors}")
+            raise RuntimeError(
+                f"Error(s) occurred while scanning: {result.tolerant_errors}"
+            )
         hosts = []
         for host in result.scanned_hosts():
             ipv4, ipv6 = host.ipv4, host.ipv6
@@ -174,25 +191,20 @@ def nmap_scan(
                 "scripts": [],
             }
             if params.script:
-                host_data["scripts"] = [{"name": name, "output": output} for name, output in host.all_scripts()]
+                host_data["scripts"] = [
+                    {"name": name, "output": output}
+                    for name, output in host.all_scripts()
+                ]
             hosts.append(HostsOutput(**host_data))
-        soar.set_summary(ScanSummary(**summary))
         return ScanNetworkOutput(ip_hostname=params.ip_hostname, hosts=hosts)
     except Exception as exc:
-        soar.set_message(f"Exception while retrieving NMAP results: {exc}")
-        raise
-
-
-def _is_valid_portlist(portlist: str) -> bool:
-    if not re.fullmatch(r"\d+(?:-\d+)?(?:,\d+(?:-\d+)?)*", str(portlist)):
-        return False
-    for item in str(portlist).split(","):
-        bounds = [int(part) for part in item.split("-")]
-        if any(value < 1 or value > 65535 for value in bounds):
-            return False
-        if len(bounds) == 2 and bounds[0] > bounds[1]:
-            return False
-    return True
+        message = f"Exception while retrieving NMAP results: {exc}"
+        soar.set_message(message)
+        # SDK exception adaptation drops client summaries; attach it to the error result.
+        failure = ActionResult(status=False, message=message, param=params.model_dump())
+        if summary is not None:
+            failure.set_summary(summary.model_dump())
+        return failure  # type: ignore[return-value]  # SDK permits error results with typed success output.
 
 
 def _retrieve_ports(ports: list) -> list[PortsOutput]:
@@ -205,11 +217,30 @@ def _retrieve_ports(ports: list) -> list[PortsOutput]:
             service_data = {
                 "name": service.name,
                 "product": service.product,
-                "scripts": [{"name": name, "output": value} for name, value in service.all_scripts()],
+                "scripts": [
+                    {"name": name, "output": value}
+                    for name, value in service.all_scripts()
+                ],
             }
             cpe = "".join(service.cpes)
-        scripts = [{"name": name, "output": value} for name, value in port.service.all_scripts()] if port.service else []
-        output.append(PortsOutput(port=port.number, state=port.state, reason=port.reason, service=service_data, cpe=cpe, scripts=scripts))
+        scripts = (
+            [
+                {"name": name, "output": value}
+                for name, value in port.service.all_scripts()
+            ]
+            if port.service
+            else []
+        )
+        output.append(
+            PortsOutput(
+                port=port.number,
+                state=port.state,
+                reason=port.reason,
+                service=service_data,
+                cpe=cpe,
+                scripts=scripts,
+            )
+        )
     return output
 
 
@@ -222,6 +253,7 @@ def render_scan_network(output: list[ScanNetworkOutput]) -> dict:
                     {
                         "ip": host.ip,
                         "state": host.state,
+                        "scripts": host.scripts,
                         "hostnames": [name.name for name in host.hostnames],
                         "tcp_ports": host.tcp.ports,
                         "udp_ports": host.udp.ports,
@@ -238,12 +270,17 @@ app.register_action(
     nmap_scan,
     name="scan network",
     description="Execute NMAP scan against a host or subnet",
-    verbose="Scan a host or subnet with NMAP and return host, port, and service details.",
+    verbose=(
+        "Scan a host or subnet with NMAP and return host, port, service, CPE, and NSE details. "
+        "Nmap must be installed on the SOAR host and available in the service user's PATH. "
+        "UDP scans use -sU --privileged and require administrator-configured Nmap capabilities. "
+        "See the installation and UDP setup instructions in this app's documentation."
+    ),
     action_type="investigate",
     read_only=False,
     params_class=ScanNetworkParams,
     output_class=ScanNetworkOutput,
+    summary_type=ScanSummary,
     view_handler=render_scan_network,
     view_template="nmap_scan.html",
 )
-

@@ -14,4 +14,4 @@
 
 """Import action modules to register their handlers with the app."""
 
-from . import scan_network as scan_network  # noqa: F401
+from . import scan_network as scan_network

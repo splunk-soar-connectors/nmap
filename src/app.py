@@ -11,10 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import ipaddress
+
 from soar_sdk.abstract import SOARClient
 from soar_sdk.app import App
 from soar_sdk.asset import BaseAsset, AssetField
 from soar_sdk.logging import getLogger
+
+from .helpers import get_nmap_binary, is_valid_portlist
 
 logger = getLogger()
 
@@ -48,11 +52,22 @@ app = App(
 def test_connectivity(soar: SOARClient, asset: Asset) -> None:
     import nmapthon2  # noqa: PLC0415
 
-    target = asset.ip_address or "8.8.8.8"
-    ports = asset.ports or "80,443"
+    target = asset.ip_address if asset.ip_address is not None else "8.8.8.8"
+    ports = asset.ports if asset.ports is not None else "80,443"
+    if not is_valid_portlist(ports):
+        raise ValueError(
+            "Please provide a valid port list in the configuration parameters"
+        )
+    try:
+        ipaddress.ip_address(target)
+    except ValueError as exc:
+        raise ValueError(
+            "Please provide a valid IP Address in the configuration parameters"
+        ) from exc
+    nmap_binary = get_nmap_binary()
     logger.progress(f"Testing NMAP connectivity against {target}")
     try:
-        nmapthon2.NmapScanner().scan([target], ports=ports)
+        nmapthon2.NmapScanner(nmap_bin=nmap_binary).scan([target], ports=ports)
     except Exception as exc:
         raise RuntimeError(f"NMAP connectivity test failed: {exc}") from exc
     logger.progress("Test Connectivity Passed")
