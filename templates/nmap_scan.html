@@ -15,34 +15,44 @@
 -->
 {% extends 'widgets/widget_template.html' %}
 {% block widget_content %}
-<div class="nmap-scanner-network">
-  {% for result in results %}
-    <h3>Scan: {{ result.ip_hostname }}</h3>
-    {% if result.hosts %}
-      {% for host in result.hosts %}
-        <h4>{{ host.ip or "Unknown host" }}{% if host.state %} ({{ host.state }}){% endif %}</h4>
-        {% if host.hostnames %}<p>Hostnames: {{ host.hostnames | join(", ") }}</p>{% endif %}
-        {% for protocol, ports in [("TCP", host.tcp_ports), ("UDP", host.udp_ports)] %}
-          {% if ports %}
-            <h5>{{ protocol }} ports</h5>
-            <table class="nmap-port-table">
-              <thead><tr><th>Port</th><th>State</th><th>Reason</th><th>Service</th><th>Product</th></tr></thead>
-              <tbody>
-                {% for port in ports %}
+  <div class="nmap-scanner-network">
+    {% for result in results %}
+      <h3>Scan: {{ result.ip_hostname }}</h3>
+      {% if result.hosts %}
+        {% for host in result.hosts %}
+          <h4>{{ host.ip or "Unknown host" }}{% if host.state %} ({{ host.state }}){% endif %}</h4>
+          {% if host.hostnames %}<p>Hostnames: {{ host.hostnames | join(", ") }}</p>{% endif %}
+          {% for protocol, ports in [("TCP", host.tcp_ports), ("UDP", host.udp_ports)] %}
+            {% if ports %}
+              <h5>{{ protocol }} ports</h5>
+              <table class="nmap-port-table">
+                <thead>
                   <tr>
-                    <td>{{ port.port }}</td><td>{{ port.state or "" }}</td><td>{{ port.reason or "" }}</td>
-                    <td>{% if port.service %}{{ port.service.name or "" }}{% endif %}</td>
-                    <td>{% if port.service %}{{ port.service.product or "" }}{% endif %}</td>
+                    <th>Port</th>
+                    <th>State</th>
+                    <th>Reason</th>
+                    <th>Service</th>
+                    <th>Product</th>
                   </tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          {% endif %}
+                </thead>
+                <tbody>
+                  {% for port in ports %}
+                    <tr>
+                      <td>{{ port.port }}</td>
+                      <td>{{ port.state or "" }}</td>
+                      <td>{{ port.reason or "" }}</td>
+                      <td>{% if port.service %}{{ port.service.name or "" }}{% endif %}</td>
+                      <td>{% if port.service %}{{ port.service.product or "" }}{% endif %}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    {% else %}
-      <p>No host data returned.</p>
-    {% endif %}
-  {% endfor %}
-</div>
+      {% else %}
+        <p>No host data returned.</p>
+      {% endif %}
+    {% endfor %}
+  </div>
 {% endblock %}
