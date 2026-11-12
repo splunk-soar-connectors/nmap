@@ -1,0 +1,74 @@
+{% extends 'widgets/widget_template.html' %}
+{% block widget_content %}
+  <div class="nmap-scanner-network">
+    <!--
+ Copyright (c) 2026 Splunk Inc.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+    {% for result in results %}
+      <h3>Scan: {{ result.ip_hostname }}</h3>
+      {% if result.hosts %}
+        {% for host in result.hosts %}
+          <h4>{{ host.ip or "Unknown host" }}{% if host.state %} ({{ host.state }}){% endif %}</h4>
+          {% if host.hostnames %}<p>Hostnames: {{ host.hostnames | join(", ") }}</p>{% endif %}
+          {% if host.scripts %}
+            <h5>Host NSE results</h5>
+            {% for script in host.scripts %}
+              <h6>{{ script.name }}</h6>
+              <pre>{{ script.output }}</pre>
+            {% endfor %}
+          {% endif %}
+          {% for protocol, ports in [("TCP", host.tcp_ports), ("UDP", host.udp_ports)] %}
+            {% if ports %}
+              <h5>{{ protocol }} ports</h5>
+              <table class="nmap-port-table">
+                <thead>
+                  <tr>
+                    <th>Port</th>
+                    <th>State</th>
+                    <th>Reason</th>
+                    <th>Service</th>
+                    <th>Product</th>
+                    <th>CPE</th>
+                    <th>NSE results</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for port in ports %}
+                    <tr>
+                      <td>{{ port.port }}</td>
+                      <td>{{ port.state or "" }}</td>
+                      <td>{{ port.reason or "" }}</td>
+                      <td>{% if port.service %}{{ port.service.name or "" }}{% endif %}</td>
+                      <td>{% if port.service %}{{ port.service.product or "" }}{% endif %}</td>
+                      <td>{{ port.cpe or "" }}</td>
+                      <td>
+                        {% for script in port.scripts %}
+                          <h6>{{ script.name }}</h6>
+                          <pre>{{ script.output }}</pre>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      {% else %}
+        <p>No host data returned.</p>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endblock %}
